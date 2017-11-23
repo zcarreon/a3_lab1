@@ -4,9 +4,10 @@
       nameModel = document.querySelector('.modelName'),
       infoPrice = document.querySelector('.priceInfo'),
       detailsModel = document.querySelector('.modelDetails'),
+      activeCar = document.querySelectorAll('.focusMini'),
       appliedClass;
 
-  function changeElements(){
+  function changeElements(e){
       //debugger;
       let objectIndex = carData[this.id];
 
@@ -22,9 +23,13 @@
       infoPrice.firstChild.nodeValue = objectIndex.price;
       detailsModel.firstChild.nodeValue = objectIndex.details;
 
-      appliedClass = this.id;
+      activeCar.classList.remove('.focusMini');
+      activeCar.classList.add('.nonActive');
 
-      element.classList.add(".focusMini");
+      e.target.classList.remove('.nonActive');
+      e.target.classList.add('.focusMini');
+
+      appliedClass = this.id;
   };
 
   carImages.forEach(function(element, index){
@@ -32,5 +37,5 @@
     element.addEventListener('click', changeElements, false);
   });
 
-  //changeElements.call(document.querySelector("#F55"));
+  changeElements.call(document.querySelector("#F55"));
 })();
