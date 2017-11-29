@@ -7,35 +7,54 @@
       activeCar = document.querySelectorAll('.focusMini'),
       appliedClass;
 
-  function changeElements(e){
-      //debugger;
-      let objectIndex = carData[this.id];
+  const httpRequest = new XMLHttpRequest();
 
-      nameModel.classList.remove(appliedClass);
-      infoPrice.classList.remove(appliedClass);
-      detailsModel.classList.remove(appliedClass);
+  function getCarData(){
+      //1. Make an AJAX call to the database. Handle any errors first.
+      if (!httpRequest) {
+        alert('Giving up, your browser sucks!');
+        return false;
+      }
 
-      nameModel.classList.add(this.id);
-      infoPrice.classList.add(this.id);
-      detailsModel.classList.add(this.id);
+      httpRequest.onreadystatechange = processRequest;
+      httpRequest.open('GET','./includes/functions.php?carModel=' + this.id);
+      httpRequest.send();
+  };
 
-      nameModel.firstChild.nodeValue = objectIndex.name;
-      infoPrice.firstChild.nodeValue = objectIndex.price;
-      detailsModel.firstChild.nodeValue = objectIndex.details;
+  function processRequest(){
+    //Handle the stages of our AJAX call
+    let reqIndicator = document.querySelector('.request-state');
+    reqIndicator.textContent = httpRequest.readyState;
+    //debugger;
+    if (httpRequest.readyState == XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) { //Request worked, all is good!
+        //debugger;
+        let data = JSON.parse(httpRequest.responseTest);
+        processResult(data);
+      } else {
+        alert('There was a problem with the request');
+      }
+    }
+  }
 
-      activeCar.classList.remove('.focusMini');
-      activeCar.classList.add('.nonActive');
+  function processResult(data){
+      const {modelName, pricing, modelDetails} = data;
 
-      e.target.classList.remove('.nonActive');
-      e.target.classList.add('.focusMini');
+      nameModel.textContent = modelName;
+      infoPrice.innerHTML = pricing;
+      detailsModel.textContent = modelDetails;
 
-      appliedClass = this.id;
+      carImages.forEach(function(element, index) {
+        element.classList.add('nonActive');
+      })
+
+      document.querySelector(`#${data.model}`).classList.remove('nonActive');
   };
 
   carImages.forEach(function(element, index){
     //debugger;
-    element.addEventListener('click', changeElements, false);
+    element.addEventListener('click', getCarData, false);
   });
 
-  changeElements.call(document.querySelector("#F55"));
+  //changeElements.call(document.querySelector("#F55"));
 })();
