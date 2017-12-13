@@ -36,4 +36,16 @@ if (isset($_GET['carModel'])) {
   //var_dump($row);
   echo json_encode($row);
 }
+
+if (isset($_GET['getVideos'])) {
+  $myQuery = "SELECT * FROM video"; //simple SQL query
+  $result = mysqli_query($conn, $myQuery); //result holds the result set
+
+  $rows = array();
+
+  while($row = mysqli_fetch_assoc($result)) {
+    $rows[] = $row;
+  }
+  echo json_encode($rows);
+}
 ?>
